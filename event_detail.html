@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">{{ event.title }}</h4>
+                {% if current_user.is_authenticated and current_user.id == event.user_id %}
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-danger delete-event" 
+                            onclick="document.getElementById('delete-form').submit();">
+                        <i class="fas fa-trash-alt me-1"></i>Delete
+                    </button>
+                    <form id="delete-form" action="{{ url_for('delete_event', event_id=event.id) }}" method="POST" class="d-none"></form>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="event-details mb-4">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="event-meta">
+                                <p><i class="fas fa-calendar-day me-2"></i><strong>Date:</strong> 
+                                    {{ event.start_time.strftime('%A, %B %d, %Y') }}</p>
+                                <p><i class="fas fa-clock me-2"></i><strong>Time:</strong> 
+                                    {{ event.start_time.strftime('%I:%M %p') }} - {{ event.end_time.strftime('%I:%M %p') }}</p>
+                                <p><i class="fas fa-map-marker-alt me-2"></i><strong>Location:</strong> {{ event.location }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="event-meta">
+                                <p><i class="fas fa-user me-2"></i><strong>Organizer:</strong> {{ event.creator.username }}</p>
+                                <p><i class="fas fa-calendar-plus me-2"></i><strong>Created:</strong> 
+                                    {{ event.created_at.strftime('%B %d, %Y') }}</p>
+                                <p>
+                                    <i class="fas fa-users me-2"></i><strong>RSVPs:</strong> 
+                                    <span class="badge bg-success rsvp-count" data-bs-toggle="tooltip" title="Attending">
+                                        <i class="fas fa-check me-1"></i>{{ rsvp_counts.attending }}
+                                    </span>
+                                    <span class="badge bg-warning text-dark rsvp-count" data-bs-toggle="tooltip" title="Maybe">
+                                        <i class="fas fa-question me-1"></i>{{ rsvp_counts.maybe }}
+                                    </span>
+                                    <span class="badge bg-danger rsvp-count" data-bs-toggle="tooltip" title="Declined">
+                                        <i class="fas fa-times me-1"></i>{{ rsvp_counts.declined }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5>Description</h5>
+                    <p>{{ event.description|default('No description provided.', true) }}</p>
+                </div>
+                
+                {% if current_user.is_authenticated %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-reply me-2"></i>RSVP to this event</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if user_rsvp %}
+                        <div class="alert alert-info mb-3">
+                            <i class="fas fa-info-circle me-2"></i>Your current RSVP: 
+                            <strong class="status-{{ user_rsvp.status }}">{{ user_rsvp.status|capitalize }}</strong>
+                        </div>
+                        {% endif %}
+                        
+                        <form method="POST" action="{{ url_for('rsvp_event', event_id=event.id) }}">
+                            {{ rsvp_form.hidden_tag() }}
+                            
+                            <div class="mb-3">
+                                {{ rsvp_form.status.label(class="form-label") }}
+                                {{ rsvp_form.status(class="form-select") }}
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                {{ rsvp_form.submit(class="btn btn-primary") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>Please <a href="{{ url_for('login') }}">login</a> to RSVP to this event.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-calendar me-2"></i>Add to Calendar</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="#" class="btn btn-outline-primary" onclick="alert('Calendar export functionality would be implemented here')">
+                        <i class="fas fa-calendar-plus me-1"></i>Google Calendar
+                    </a>
+                    <a href="#" class="btn btn-outline-primary" onclick="alert('Calendar export functionality would be implemented here')">
+                        <i class="far fa-calendar-alt me-1"></i>iCalendar (.ics)
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-share-alt me-2"></i>Share Event</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="#" class="btn btn-outline-primary" onclick="alert('Social sharing functionality would be implemented here')">
+                        <i class="fab fa-facebook me-1"></i>Share on Facebook
+                    </a>
+                    <a href="#" class="btn btn-outline-primary" onclick="alert('Social sharing functionality would be implemented here')">
+                        <i class="fab fa-twitter me-1"></i>Share on Twitter
+                    </a>
+                    <button class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard!')">
+                        <i class="fas fa-link me-1"></i>Copy Link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
