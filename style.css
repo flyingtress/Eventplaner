@@ -1,0 +1,106 @@
+/* Custom styles for the Event Management System */
+
+/* Event card styling */
+.event-card {
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Calendar customization */
+.fc-event {
+    cursor: pointer;
+    border-radius: 4px !important;
+}
+
+.fc-theme-bootstrap5 .fc-list-day-cushion {
+    background-color: var(--bs-dark) !important;
+}
+
+.fc .fc-list-event:hover td {
+    background-color: var(--bs-dark) !important;
+}
+
+/* Status indicators for RSVP */
+.status-attending {
+    color: var(--bs-success);
+}
+
+.status-maybe {
+    color: var(--bs-warning);
+}
+
+.status-declined {
+    color: var(--bs-danger);
+}
+
+/* Custom spinner for loading states */
+.loading-spinner {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    border: 0.25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border .75s linear infinite;
+}
+
+/* Ensure footer stays at bottom */
+html, body {
+    min-height: 100vh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Make date-time fields more readable on dark theme */
+input[type="datetime-local"] {
+    color-scheme: dark;
+}
+
+/* Event detail page */
+.event-details {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.event-meta {
+    font-size: 0.9rem;
+}
+
+/* RSVP status count badges */
+.rsvp-count {
+    font-size: 0.85rem;
+    padding: 0.35em 0.65em;
+}
+
+/* Animation for flash messages */
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert {
+    animation: fadeInDown 0.5s ease-out;
+}
